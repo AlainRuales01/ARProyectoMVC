@@ -3,3 +3,25 @@
     ViewData["Title"] = "Crear Usuario";
 }
 
+<div>
+    @using(Html.BeginForm()){
+        <div>
+            <p>Nombre de usuario</p>
+            @Html.TextAreaFor(model => model.Nombre)
+        </div>
+        <div>
+            <p>Correo de usuario</p>
+            @Html.TextAreaFor(model => model.Correo)
+        </div>
+        <div>
+            <p>Fecha de nacimiento de usuario</p>
+            @Html.TextBoxFor(model=>model.FechaNacimiento, new{Type = "date"})
+        </div>
+        <div>
+            <p>Contraseña</p>
+            @Html.TextAreaFor(model => model.Clave)
+        </div>
+        <input values:"Crear" type="submit"/>
+    }
+    
+</div>

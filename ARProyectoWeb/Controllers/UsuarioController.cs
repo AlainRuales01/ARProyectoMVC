@@ -24,6 +24,14 @@ namespace ARProyectoWeb.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Create(Usuario nuevoUsuario)
+        {
+            _context.Usuario.Add(nuevoUsuario);
+            _context.SaveChanges();
+            return View(nuevoUsuario);
+        }
+
         public IActionResult Edit(int? usuarioId)
         {
             var usuario = _context.Usuario.Find(usuarioId);
