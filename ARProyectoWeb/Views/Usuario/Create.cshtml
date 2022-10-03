@@ -2,8 +2,15 @@
 @{
     ViewData["Title"] = "Crear Usuario";
 }
-
-<div>
+<h2>Crear Usuario</h2>
+@if(ViewBag.Error == "Error"){
+    <div class="container">
+        <div class="alert alert-primary">
+            Se debe insertar información en todos los campos
+        </div>
+    </div>
+}
+<div class="container">
     @using(Html.BeginForm()){
         <div>
             <p>Nombre de usuario</p>
@@ -23,5 +30,4 @@
         </div>
         <input values:"Crear" type="submit"/>
     }
-    
 </div>

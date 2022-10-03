@@ -5,7 +5,14 @@
 }
 
 <h2>Editar Usuario</h2>
-
+@if (ViewBag.Error == "Error")
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            Se ha producido un error al intentar editar el usuario
+        </div>
+    </div>
+}
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(model => model.UsuarioId)
