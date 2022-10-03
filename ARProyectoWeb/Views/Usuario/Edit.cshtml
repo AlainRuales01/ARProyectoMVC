@@ -1,0 +1,24 @@
+﻿@model ARProyectoWeb.Data.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<h2>Editar Usuario</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.UsuarioId)
+    <div>
+        <p>Nombre:</p>
+        @Html.TextAreaFor(model => model.Nombre)
+    </div>
+    <div>
+        <p>Correo:</p>
+        @Html.TextAreaFor(model => model.Correo)
+    </div>
+    <input values:"Guardar" type="submit"/>
+}
+
+
+

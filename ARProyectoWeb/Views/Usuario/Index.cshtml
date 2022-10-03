@@ -38,8 +38,8 @@
                             @item.FechaNacimiento.Date
                         </td>
                         <td>
-                            @Html.ActionLink("Editar","Edit",new{id=item.UsuarioId},new{@class="btn btn-primary"})
-                            @Html.ActionLink("Eliminar","Delete",new{id=item.UsuarioId},new{@class="btn btn-alert"})
+                            @Html.ActionLink("Editar","Edit",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
+                            @Html.ActionLink("Eliminar","Delete",new{usuarioId=item.UsuarioId},new{@class="btn btn-alert"})
                         </td>
                     </tr>
                 }

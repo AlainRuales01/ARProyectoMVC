@@ -1,5 +1,6 @@
 ﻿using ARProyectoWeb.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ARProyectoWeb.Controllers
 {
@@ -26,6 +27,21 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Edit(int? usuarioId)
         {
             var usuario = _context.Usuario.Find(usuarioId);
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Usuario usuario)
+        {
+            var usuarioModificar = _context.Usuario.Find(usuario.UsuarioId);
+            if(usuarioModificar != null)
+            {
+                usuarioModificar.Nombre = usuario.Nombre;
+                usuarioModificar.Correo = usuario.Correo;
+                _context.Entry(usuarioModificar).State = EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(usuario);
         }
 
