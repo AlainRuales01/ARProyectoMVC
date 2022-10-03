@@ -56,6 +56,12 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Delete(int? usuarioId)
         {
             var usuario = _context.Usuario.Find(usuarioId);
+            if (usuario != null)
+            {
+                _context.Usuario.Remove(usuario);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
             return View(usuario);
         }
     }
