@@ -43,7 +43,7 @@
                             @item.Correo
                         </td>
                         <td>
-                            @item.FechaNacimiento.Date
+                            @item.FechaNacimiento.ToShortDateString()
                         </td>
                         <td>
                             @Html.ActionLink("Editar","Edit",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
