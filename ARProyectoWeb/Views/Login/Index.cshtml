@@ -1,6 +1,7 @@
 ﻿@model ARProyectoWeb.Data.Models.Usuario
 @{
     ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
 }
 
 @if (ViewBag.Error != null)
@@ -11,22 +12,25 @@
         </div>
     </div>
 }
-<div class="container">
-    <h2>Login</h2>
-    @using (Html.BeginForm())
-    {
-        <div>
-            <div>
-                <p>Correo</p>
-                @Html.TextAreaFor(model => model.Correo)
+<div class="d-flex align-content-center justify-content-center">
+    <div class="border card p-4 m-5" >
+        @using (Html.BeginForm())
+        {
+            <div class="d-flex flex-column">
+                <div class="mb-3">
+                    <h2>Login</h2>
+                </div>
+                <div class="mb-3">
+                    <p>Correo</p>
+                    @Html.EditorFor(model => model.Correo)
+                </div>
+                <div class="mb-3">
+                    <p>Contraseña</p>
+                    @Html.PasswordFor(model => model.Clave)
+                </div>
+                <input type="submit" value="Ingresar" />
             </div>
-            <div>
-                <p>Contraseña</p>
-                @Html.PasswordFor(model => model.Clave)
-            </div>
-            <input type="submit" value="Ingresar" />
-        </div>
-        
-        
-    }
+        }
+    </div>
 </div>
+

@@ -33,16 +33,21 @@ namespace ARProyectoWeb.Controllers
             if (usuario != null)
             {
                 HttpContext.Session.SetString("UserName", usuario.Correo);
-                HttpContext.Session.SetString("UsuarioId", usuario.UsuarioId.ToString());
+                HttpContext.Session.SetString("UserId", usuario.UsuarioId.ToString());
                 return RedirectToAction("Index", "Home");
             }
 
             ViewBag.Error = "No se encontró el usuario especificado";
             return View();
+        }
 
-
-
-
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.SetString("UserName", "");
+            HttpContext.Session.SetString("UserId", "");
+            return RedirectToAction("Index");
         }
     }
+
+
 }

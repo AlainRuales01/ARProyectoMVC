@@ -23,6 +23,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
                         </li>
                     </ul>
+                    <div class="px-4">
+                        @Context.Session.GetString("UserName")
+                    </div>
+                    @Html.ActionLink("Cerrar Sesión", "Logout", "Login", null, new { @class = "btn btn-primary" })
                 </div>
             </div>
         </nav>
