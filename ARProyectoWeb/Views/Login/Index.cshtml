@@ -1,0 +1,32 @@
+﻿@model ARProyectoWeb.Data.Models.Usuario
+@{
+    ViewData["Title"] = "Login";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+<div class="container">
+    <h2>Login</h2>
+    @using (Html.BeginForm())
+    {
+        <div>
+            <div>
+                <p>Correo</p>
+                @Html.TextAreaFor(model => model.Correo)
+            </div>
+            <div>
+                <p>Contraseña</p>
+                @Html.PasswordFor(model => model.Clave)
+            </div>
+            <input type="submit" value="Ingresar" />
+        </div>
+        
+        
+    }
+</div>

@@ -1,9 +1,11 @@
 ﻿using ARProyectoWeb.Data.Models;
+using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ARProyectoWeb.Controllers
 {
+    [LoginFilter]
     public class UsuarioController : Controller
     {
         private DataBaseContext _context;

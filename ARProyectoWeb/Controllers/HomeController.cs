@@ -1,9 +1,11 @@
 ﻿using ARProyectoWeb.Models;
+using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace ARProyectoWeb.Controllers
 {
+    [LoginFilter]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
