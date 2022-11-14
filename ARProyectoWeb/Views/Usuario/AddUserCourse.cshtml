@@ -1,0 +1,24 @@
+﻿@model ARProyectoWeb.ViewModels.AddUserCourseViewModel
+
+@{
+    ViewData["Title"] = "Agregar usuario a curso";
+}
+
+<h2>Agregar usuario a curso</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+@using (Html.BeginForm())
+{
+    <p>Seleccioné el curso que desea agregar al usuario</p>
+    @Html.DropDownList("CourseId", null, htmlAttributes: new { @class = "form-control" })
+    <input values:"Guardar" type="submit" />
+}
+
+
+

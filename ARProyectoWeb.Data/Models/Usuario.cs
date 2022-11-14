@@ -13,10 +13,15 @@ namespace ARProyectoWeb.Data.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UsuarioId { get; set; }
-        public string Nombre { get; set; }
+        public string Nombres { get; set; }
+        public string Apellidos { get; set; }
         public string Correo { get; set; }
         public string Clave { get; set; }
+        public string Rol { get; set; }
         public DateTime FechaNacimiento { get; set; }
+        public List<UsuarioCourse> Cursos { get; set; }
+        public List<Task> TareasCreadas { get; set; }
+        public List<TaskRate> CalificacionesEstudiante{ get; set; }
 
     }
 }

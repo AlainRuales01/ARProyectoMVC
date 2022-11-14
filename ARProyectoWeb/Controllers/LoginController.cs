@@ -34,6 +34,7 @@ namespace ARProyectoWeb.Controllers
             {
                 HttpContext.Session.SetString("UserName", usuario.Correo);
                 HttpContext.Session.SetString("UserId", usuario.UsuarioId.ToString());
+                HttpContext.Session.SetString("UserRol", usuario.Rol.ToString());
                 return RedirectToAction("Index", "Home");
             }
 

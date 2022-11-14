@@ -1,0 +1,34 @@
+﻿@model ARProyectoWeb.Data.Models.Task
+
+@{
+    ViewData["Title"] = "Editar task";
+}
+
+<h2>Editar usuario</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+@using (Html.BeginForm())
+{
+    <div>
+        <p>Nombrse:</p>
+        @Html.TextBoxFor(model => model.Titulo)
+    </div>
+    <div>
+        <p>Apellidos:</p>
+        @Html.TextBoxFor(model => model.Descripcion)
+    </div>
+    <div>
+        <p>Seleccioné docente creador de task</p>
+        @Html.DropDownList("UsuarioId", null, htmlAttributes: new { @class = "form-control" })
+    </div>
+    <input values:"Guardar" type="submit" />
+}
+
+
+

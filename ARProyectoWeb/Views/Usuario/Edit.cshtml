@@ -4,12 +4,12 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
-<h2>Editar Usuario</h2>
-@if (ViewBag.Error == "Error")
+<h2>Editar usuario</h2>
+@if (ViewBag.Error != null)
 {
     <div class="container">
         <div class="alert alert-primary">
-            Se ha producido un error al intentar editar el usuario
+            @ViewBag.Error
         </div>
     </div>
 }
@@ -17,12 +17,16 @@
 {
     @Html.HiddenFor(model => model.UsuarioId)
     <div>
-        <p>Nombre:</p>
-        @Html.TextAreaFor(model => model.Nombre)
+        <p>Nombrse:</p>
+        @Html.TextBoxFor(model => model.Nombres)
+    </div>
+    <div>
+        <p>Apellidos:</p>
+        @Html.TextBoxFor(model => model.Apellidos)
     </div>
     <div>
         <p>Correo:</p>
-        @Html.TextAreaFor(model => model.Correo)
+        @Html.TextBoxFor(model => model.Correo)
     </div>
     <input values:"Guardar" type="submit"/>
 }

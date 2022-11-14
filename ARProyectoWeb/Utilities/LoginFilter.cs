@@ -7,9 +7,9 @@ namespace ARProyectoWeb.Utilities
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var user = context.HttpContext.Session.GetString("UserName");
+            var userName = context.HttpContext.Session.GetString("UserName");
             
-            if (string.IsNullOrEmpty(user))
+            if (string.IsNullOrEmpty(userName))
             {
                 context.Result = new UnauthorizedResult();
             }

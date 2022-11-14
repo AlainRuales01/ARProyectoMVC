@@ -2,32 +2,43 @@
 @{
     ViewData["Title"] = "Crear Usuario";
 }
-<h2>Crear Usuario</h2>
-@if(ViewBag.Error == "Error"){
+<h2>Crear usuario</h2>
+@if (ViewBag.Error != null){
     <div class="container">
         <div class="alert alert-primary">
-            Se debe insertar información en todos los campos
+            @ViewBag.Error
         </div>
     </div>
 }
 <div class="container">
     @using(Html.BeginForm()){
         <div>
-            <p>Nombre de usuario</p>
-            @Html.TextAreaFor(model => model.Nombre)
+            <p>Nombres de usuario</p>
+            @Html.TextBoxFor(model => model.Nombres, new{@class = "form-control"})
+        </div>
+        <div>
+            <p>Apellidos de usuario</p>
+            @Html.TextBoxFor(model => model.Apellidos, new{@class = "form-control"})
         </div>
         <div>
             <p>Correo de usuario</p>
-            @Html.TextAreaFor(model => model.Correo)
+            @Html.TextBoxFor(model => model.Correo, new{@class = "form-control"})
+        </div>
+        <div>
+            <p>Seleccione el rol del usuario</p>
+            <select class="form-control" id="Rol" name="Rol">
+                <option selected value="Estudiante">Estudiante</option>
+                <option value="Docente">Docente</option>
+            </select>            
         </div>
         <div>
             <p>Fecha de nacimiento de usuario</p>
-            @Html.TextBoxFor(model=>model.FechaNacimiento, new{Type = "date"})
+            @Html.TextBoxFor(model=>model.FechaNacimiento, new{@class = "form-control", Type = "date"})
         </div>
         <div>
             <p>Contraseña</p>
-            @Html.PasswordFor(model => model.Clave)
+            @Html.PasswordFor(model => model.Clave, new{@class = "form-control"})
         </div>
-        <input values:"Crear" type="submit"/>
+        <input value="Crear" type="submit"/>
     }
 </div>

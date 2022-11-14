@@ -1,0 +1,35 @@
+﻿@model ARProyectoWeb.Data.Models.Course
+@{
+    ViewData["Title"] = "Crear curso";
+}
+<h2>Crear curso</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        <div>
+            <p>Nombre de curso</p>
+            @Html.TextBoxFor(model => model.Nombre, new{@class = "form-control"})
+        </div>
+        <div>
+            <p>Descripción de curso</p>
+            @Html.TextBoxFor(model => model.Descripcion, new{@class = "form-control"})
+        </div>
+        <div>
+            <p>Fecha de inicio de curso</p>
+            @Html.TextBoxFor(model=>model.FechaInicio, new{@class = "form-control", Type = "date"})
+        </div>
+        <div>
+            <p>Fecha de fin de curso</p>
+            @Html.TextBoxFor(model=>model.FechaFin, new{@class = "form-control", Type = "date"})
+        </div>
+        <input values="Crear" type="submit" />
+    }
+</div>

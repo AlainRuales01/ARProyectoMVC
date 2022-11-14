@@ -1,9 +1,9 @@
-﻿@model List<ARProyectoWeb.Data.Models.Usuario>
+﻿@model List<ARProyectoWeb.Data.Models.Task>
 
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Crear tareas";
 }
-<a class="btn btn-primary" href="@Url.Action("Create")">Crear usuario</a>
+<a class="btn btn-primary" href="@Url.Action("Create")">Crear tarea</a>
 
 @if (ViewBag.Error != null)
 {
@@ -23,9 +23,8 @@
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Fecha de nacimiento</th>
+                    <th>Descripcion</th>
+                    <th>Usuario creador</th>
                     <th></th>
                 </tr>
             </thead>
@@ -34,28 +33,26 @@
                 {
                     <tr class="align-middle">
                         <td>
-                            @item.Nombres @item.Apellidos
+                            @item.Titulo
                         </td>
                         <td>
-                            @item.Rol
+                            @item.Descripcion
                         </td>
                         <td>
-                            @item.Correo
+                            @item.UsuarioCreador.Correo
                         </td>
                         <td>
-                            @item.FechaNacimiento.ToShortDateString()
-                        </td>
-                        <td>
-                            @Html.ActionLink("Editar","Edit",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            @Html.ActionLink("Agregar a curso","AddUserCourse",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            @*@Html.ActionLink("Eliminar","Delete",new{usuarioId=item.UsuarioId},new{@class="btn btn-danger"})*@
+                            @Html.ActionLink("Editar","Edit",new{taskId=item.TaskId},new{@class="btn btn-primary"})
+                            @*@Html.ActionLink("Eliminar","Delete",new{taskId=item.TaskId},new{@class="btn btn-danger"})*@
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-}else{
+}
+else
+{
     <div>
         <h2>No existen registros</h2>
     </div>

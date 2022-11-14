@@ -1,9 +1,9 @@
-﻿@model List<ARProyectoWeb.Data.Models.Usuario>
+﻿@model List<ARProyectoWeb.Data.Models.Course>
 
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Cursos";
 }
-<a class="btn btn-primary" href="@Url.Action("Create")">Crear usuario</a>
+<a class="btn btn-primary" href="@Url.Action("Create")">Crear curso</a>
 
 @if (ViewBag.Error != null)
 {
@@ -23,9 +23,9 @@
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Fecha de nacimiento</th>
+                    <th>Descripcion</th>
+                    <th>Fecha de inicio</th>
+                    <th>Fecha de fin</th>
                     <th></th>
                 </tr>
             </thead>
@@ -34,28 +34,29 @@
                 {
                     <tr class="align-middle">
                         <td>
-                            @item.Nombres @item.Apellidos
+                            @item.Nombre
                         </td>
                         <td>
-                            @item.Rol
+                            @item.Descripcion
                         </td>
                         <td>
-                            @item.Correo
+                            @item.FechaInicio.ToShortDateString()
                         </td>
                         <td>
-                            @item.FechaNacimiento.ToShortDateString()
+                            @item.FechaFin.ToShortDateString()
                         </td>
                         <td>
-                            @Html.ActionLink("Editar","Edit",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            @Html.ActionLink("Agregar a curso","AddUserCourse",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            @*@Html.ActionLink("Eliminar","Delete",new{usuarioId=item.UsuarioId},new{@class="btn btn-danger"})*@
+                            @Html.ActionLink("Editar","Edit",new{courseId=item.CourseId},new{@class="btn btn-primary"})
+                            @*@Html.ActionLink("Eliminar","Delete",new{courseId=item.CourseId},new{@class="btn btn-danger"})*@
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-}else{
+}
+else
+{
     <div>
         <h2>No existen registros</h2>
     </div>

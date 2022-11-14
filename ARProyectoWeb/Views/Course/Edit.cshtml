@@ -1,0 +1,28 @@
+﻿@model ARProyectoWeb.Data.Models.Course
+
+@{
+    ViewData["Title"] = "Editar curso";
+}
+
+<h2>Editar task</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.CourseId)
+    <div>
+        <p>Nombre:</p>
+        @Html.TextBoxFor(model => model.Nombre)
+    </div>
+    <div>
+        <p>Descripción:</p>
+        @Html.TextBoxFor(model => model.Descripcion)
+    </div>
+    <input values:"Guardar" type="submit" />
+}
