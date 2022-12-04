@@ -1,0 +1,30 @@
+﻿@model ARProyectoWeb.ViewModels.AddTaskCourseViewModel
+
+@{
+    ViewData["Title"] = "Agregar usuario a curso";
+}
+
+<h2>Agregar usuario a curso</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+@using (Html.BeginForm())
+{
+    <div>
+        <p>Seleccioné el curso que desea agregar a la tarea</p>
+        @Html.DropDownList("CourseId", null, htmlAttributes: new { @class = "form-control" })
+    </div>
+    <div>
+        <p>Importancia de tarea</p>
+        @Html.TextBoxFor(model=>model.Calificacion, new{@class = "form-control", Type = "number"})
+    </div>
+    <input values:"Guardar" type="submit" />
+}
+
+
+

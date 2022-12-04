@@ -23,10 +23,16 @@
         <p>Apellidos:</p>
         @Html.TextBoxFor(model => model.Descripcion)
     </div>
-    <div>
-        <p>Seleccioné docente creador de task</p>
-        @Html.DropDownList("UsuarioId", null, htmlAttributes: new { @class = "form-control" })
-    </div>
+    @if (Context.Session.GetString("UserRole") == "Admin")
+    {
+        <div>
+
+            <p>Seleccioné docente creador de task</p>
+            @Html.DropDownList("UsuarioId", null, htmlAttributes: new { @class = "form-control" })
+        </div>
+    }
+
+
     <input values:"Guardar" type="submit" />
 }
 

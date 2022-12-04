@@ -3,6 +3,7 @@ using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ARProyectoWeb.Controllers
 {
@@ -18,35 +19,48 @@ namespace ARProyectoWeb.Controllers
 
         public IActionResult Index()
         {
-            var rol = HttpContext.Session.GetString("UserRol");
+            var userRole = HttpContext.Session.GetString("UserRole");
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
             List<Course> cursos = new List<Course>();
-            ;
-            if (rol == "Docente")
+            if (userRole == "Docente" || userRole == "Estudiante")
             {
-                List<int> usuarioCourses = _context.UsuarioCourse.Where(u => u.UsuarioId == userId).Select(c => c.CourseId).ToList();
+                List<int> usuarioCourses = _context.UsuarioCourse.Where(u => u.UsuarioId == userId).Select(c => c.CourseId).Distinct().ToList();
                 cursos = _context.Course.Where(c => usuarioCourses.Contains(c.CourseId)).ToList();
             }
-            else if (rol == "Admin")
+            else if (userRole == "Admin")
             {
                 cursos = _context.Course.ToList();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
             }
             return View(cursos);
         }
 
         public IActionResult Create()
         {
-            return View();
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Admin")
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
         }
 
         [HttpPost]
         public IActionResult Create(Course nuevoCurso)
         {
-            if (string.IsNullOrEmpty(nuevoCurso.Nombre) || string.IsNullOrEmpty(nuevoCurso.Descripcion)  || nuevoCurso.FechaInicio == default(DateTime) || nuevoCurso.FechaFin == default(DateTime))
+            if (string.IsNullOrEmpty(nuevoCurso.Nombre) || string.IsNullOrEmpty(nuevoCurso.Descripcion) || nuevoCurso.FechaInicio == default(DateTime) || nuevoCurso.FechaFin == default(DateTime))
             {
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
                 return View(nuevoCurso);
             }
+            
             _context.Course.Add(nuevoCurso);
             _context.SaveChanges();
             return RedirectToAction("Index");
@@ -82,16 +96,54 @@ namespace ARProyectoWeb.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult ListaUsuariosCourse(int courseId) {
-            ViewBag.CourseId = new SelectList(_context.Course, "CourseId", "Nombre");
-            List<Usuario> usuarios = new List<Usuario>();
-            if(courseId != 0)
+        public IActionResult ListaUsuariosCourse(int courseId)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Admin")
             {
+                ViewBag.CourseId = new SelectList(_context.Course, "CourseId", "Nombre");
+            }
+            else if (userRole == "Docente" || userRole == "Estudiante")
+            {
+                var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+                var usuariosCourseId = _context.UsuarioCourse.Where(c => c.UsuarioId == userId).Select(c => c.CourseId).ToList();
+                ViewBag.CourseId = new SelectList(_context.Course.Where(c => usuariosCourseId.Contains(c.CourseId)), "CourseId", "Nombre");
+            }
+
+            List<Usuario> usuarios = new List<Usuario>();
+            if (courseId != 0)
+            { 
                 var usuariosCourseId = _context.UsuarioCourse.Where(c => c.CourseId == courseId).Select(c => c.UsuarioId).ToList();
                 usuarios = _context.Usuario.Where(u => usuariosCourseId.Contains(u.UsuarioId)).ToList();
             }
             return View(usuarios);
         }
+
+        public IActionResult ListaTaskCourse(int courseId)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Admin")
+            {
+                ViewBag.CourseId = new SelectList(_context.Course, "CourseId", "Nombre");
+            }
+            else if (userRole == "Docente" || userRole == "Estudiante")
+            {
+                ViewBag.courseSelectedId = courseId;
+                var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+                var usuariosCourseId = _context.UsuarioCourse.Where(c => c.UsuarioId == userId).Select(c => c.CourseId).ToList();
+                ViewBag.CourseId = new SelectList(_context.Course.Where(c => usuariosCourseId.Contains(c.CourseId)), "CourseId", "Nombre");
+            }
+
+            List<Data.Models.Task> tasks = new List<Data.Models.Task>();
+            if (courseId != 0)
+            {
+                var taskCourseId = _context.TaskCourse.Where(c => c.CourseId == courseId).Select(c => c.TaskId).ToList();
+                tasks = _context.Task.Where(u => taskCourseId.Contains(u.TaskId)).ToList();
+            }
+            return View(tasks);
+        }
+
+
 
 
     }

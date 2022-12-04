@@ -1,9 +1,9 @@
-﻿@model List<ARProyectoWeb.Data.Models.Usuario>
+﻿@model ARProyectoWeb.ViewModels.AddTaskRateViewModel
 
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Calificaciones";
 }
-<a class="btn btn-primary" href="@Url.Action("Create")">Crear usuario</a>
+
 
 @if (ViewBag.Error != null)
 {
@@ -16,28 +16,25 @@
 <br />
 <br />
 
-@if (Model.Count > 0)
+@if (Model.Estudiantes.Count > 0)
 {
     <div class="table-responsive">
         <table class="table">
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Rol</th>
                     <th>Correo</th>
                     <th>Fecha de nacimiento</th>
-                    <th></th>
+                    <th>Calificacion de usuario</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Estudiantes)
                 {
+                    var calificacionEstudiante = Model.CalificacionesEstudiantes.Where(c => c.UsuarioId == item.UsuarioId).Select(c => c.Calificacion).FirstOrDefault();
                     <tr class="align-middle">
                         <td>
                             @item.Nombres @item.Apellidos
-                        </td>
-                        <td>
-                            @item.Rol
                         </td>
                         <td>
                             @item.Correo
@@ -46,20 +43,24 @@
                             @item.FechaNacimiento.ToShortDateString()
                         </td>
                         <td>
-                            @if (@Context.Session.GetString("UserRole") == "Admin")
-                            {
-                                @Html.ActionLink("Editar","Edit",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            }
-                            @Html.ActionLink("Agregar a curso","AddUserCourse",new{usuarioId=item.UsuarioId},new{@class="btn btn-primary"})
-                            @*@Html.ActionLink("Eliminar","Delete",new{usuarioId=item.UsuarioId},new{@class="btn btn-danger"})*@
+                            <form method="post" asp-route-UsuarioId=@item.UsuarioId asp-route-CourseId=@Model.CourseId asp-route-TaskId=@Model.TaskId asp-route-TaskId=@item.Calificacion>
+                                <div>
+                                    @Html.TextBoxFor(model => model.Calificacion, new{@class = "form-control"})
+                                </div>
+                                <input type="submit" value="Enviar calificación" class="btn btn-primary" />
+                            </form>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-}else{
+}
+else
+{
     <div>
         <h2>No existen registros</h2>
     </div>
 }
+
+

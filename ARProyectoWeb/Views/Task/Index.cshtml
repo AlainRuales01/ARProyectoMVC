@@ -42,7 +42,14 @@
                             @item.UsuarioCreador.Correo
                         </td>
                         <td>
-                            @Html.ActionLink("Editar","Edit",new{taskId=item.TaskId},new{@class="btn btn-primary"})
+                            
+                            @if(Context.Session.GetString("UserRole") == "Admin"){
+                                @Html.ActionLink("Editar","Edit",new{taskId=item.TaskId},new{@class="btn btn-primary"})
+                            }
+                            @if (Context.Session.GetString("UserRole") == "Docente")
+                            {
+                                @Html.ActionLink("Agregar a curso","AddTaskCourse",new{taskId=item.TaskId},new{@class="btn btn-primary"})
+                            }
                             @*@Html.ActionLink("Eliminar","Delete",new{taskId=item.TaskId},new{@class="btn btn-danger"})*@
                         </td>
                     </tr>

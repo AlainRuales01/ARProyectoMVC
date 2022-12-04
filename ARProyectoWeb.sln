@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARProyectoWeb", "ARProyectoWeb\ARProyectoWeb.csproj", "{FD04940D-0772-4AD0-A7C6-D8E38FA3B584}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARProyectoWeb.Data", "ARProyectoWeb.Data\ARProyectoWeb.Data.csproj", "{4B664359-A4C0-4EB8-867B-FBA37DC5B292}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARProyectoWeb.Data", "ARProyectoWeb.Data\ARProyectoWeb.Data.csproj", "{4B664359-A4C0-4EB8-867B-FBA37DC5B292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARProyectoWeb.Business", "ARProyectoWeb.Business\ARProyectoWeb.Business.csproj", "{34ABBF08-CE02-47B1-A127-CDF177A80F27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4B664359-A4C0-4EB8-867B-FBA37DC5B292}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B664359-A4C0-4EB8-867B-FBA37DC5B292}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B664359-A4C0-4EB8-867B-FBA37DC5B292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34ABBF08-CE02-47B1-A127-CDF177A80F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34ABBF08-CE02-47B1-A127-CDF177A80F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34ABBF08-CE02-47B1-A127-CDF177A80F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34ABBF08-CE02-47B1-A127-CDF177A80F27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

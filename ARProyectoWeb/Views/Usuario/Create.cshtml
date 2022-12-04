@@ -28,7 +28,10 @@
             <p>Seleccione el rol del usuario</p>
             <select class="form-control" id="Rol" name="Rol">
                 <option selected value="Estudiante">Estudiante</option>
-                <option value="Docente">Docente</option>
+                @if (Context.Session.GetString("UserRole") == "Admin")
+                {
+                    <option value="Docente">Docente</option>
+                }
             </select>            
         </div>
         <div>
