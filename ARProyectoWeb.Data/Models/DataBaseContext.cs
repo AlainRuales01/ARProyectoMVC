@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ARProyectoWeb.Data.Utilities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,23 @@ namespace ARProyectoWeb.Data.Models
 {
     public class DataBaseContext : DbContext
     {
+        public DataBaseContext()
+        {
+
+        }
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
 
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                string connectionString = ConfigurationUtility.GetConfiguratiConnectionSetting("DataBaseConnection");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
 
         public DbSet<Usuario> Usuario { get; set; }

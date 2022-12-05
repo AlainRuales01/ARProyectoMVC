@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ARProyectoWeb.Business\ARProyectoWeb.Business.csproj" />
     <ProjectReference Include="..\ARProyectoWeb.Data\ARProyectoWeb.Data.csproj" />
   </ItemGroup>
 

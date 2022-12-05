@@ -1,4 +1,5 @@
-﻿using ARProyectoWeb.Models;
+﻿using ARProyectoWeb.Data.Utilities;
+using ARProyectoWeb.Models;
 using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;

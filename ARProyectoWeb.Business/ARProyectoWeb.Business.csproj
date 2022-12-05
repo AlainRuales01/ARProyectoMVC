@@ -10,4 +10,8 @@
     <Folder Include="BO\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ARProyectoWeb.Data\ARProyectoWeb.Data.csproj" />
+  </ItemGroup>
+
 </Project>

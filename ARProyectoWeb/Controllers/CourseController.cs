@@ -1,4 +1,5 @@
-﻿using ARProyectoWeb.Data.Models;
+﻿using ARProyectoWeb.Business.BO;
+using ARProyectoWeb.Data.Models;
 using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ namespace ARProyectoWeb.Controllers
     public class CourseController : Controller
     {
         private DataBaseContext _context;
+        ARProyectoBO arProyectoBO = new ARProyectoBO();
 
         public CourseController(DataBaseContext context)
         {
@@ -61,14 +63,14 @@ namespace ARProyectoWeb.Controllers
                 return View(nuevoCurso);
             }
             
-            _context.Course.Add(nuevoCurso);
-            _context.SaveChanges();
+            arProyectoBO.AddNewCourse(nuevoCurso);
+
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? courseId)
+        public IActionResult Edit(int CourseId)
         {
-            var curso = _context.Course.Find(courseId);
+            var curso = arProyectoBO.FindCourseById(CourseId);
             if (curso == null)
             {
                 return RedirectToAction("Index");
@@ -79,7 +81,7 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Course curso)
         {
-            var cursoModificar = _context.Course.Find(curso.CourseId);
+            var cursoModificar = arProyectoBO.FindCourseById(curso.CourseId);
             if (string.IsNullOrEmpty(curso.Nombre) || string.IsNullOrEmpty(curso.Descripcion))
             {
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
@@ -90,8 +92,7 @@ namespace ARProyectoWeb.Controllers
 
                 cursoModificar.Nombre = curso.Nombre;
                 cursoModificar.Descripcion = curso.Descripcion;
-                _context.Entry(cursoModificar).State = EntityState.Modified;
-                _context.SaveChanges();
+                arProyectoBO.EditCourse(cursoModificar);
             }
             return RedirectToAction("Index");
         }

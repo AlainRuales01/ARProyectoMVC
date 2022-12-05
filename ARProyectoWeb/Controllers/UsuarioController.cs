@@ -1,4 +1,5 @@
-﻿using ARProyectoWeb.Data.Models;
+﻿using ARProyectoWeb.Business.BO;
+using ARProyectoWeb.Data.Models;
 using ARProyectoWeb.Utilities;
 using ARProyectoWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -11,28 +12,15 @@ namespace ARProyectoWeb.Controllers
     [LoginFilter]
     public class UsuarioController : Controller
     {
-        private DataBaseContext _context;
-
-        public UsuarioController(DataBaseContext context)
-        {
-            _context = context;
-        }
+        ARProyectoBO arProyectoBO = new ARProyectoBO();
 
         public IActionResult Index()
         {
             List<Usuario> usuarios = new List<Usuario>();
             var userRole = HttpContext.Session.GetString("UserRole");
-            if (userRole == "Admin")
-            {
-                usuarios = _context.Usuario.Where(u => u.Rol != "Admin").ToList();
-            }else if (userRole == "Docente")
-            {
-                usuarios = _context.Usuario.Where(u => u.Rol != "Admin" && u.Rol != "Docente").ToList();
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            
+            arProyectoBO.FindUsersList(userRole);
+
             return View(usuarios);
         }
 
@@ -64,19 +52,19 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Ingrese toda la información necesaria";
                 return View(nuevoUsuario);
             }
-            _context.Usuario.Add(nuevoUsuario);
-            _context.SaveChanges();
+            arProyectoBO.AddNewUser(nuevoUsuario);
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? usuarioId)
+        public IActionResult Edit(int UsuarioId)
         {
-            var usuario = _context.Usuario.Find(usuarioId);
+            var usuario = arProyectoBO.FindUserById(UsuarioId);
             var userRole = HttpContext.Session.GetString("UserRole");
             if (usuario == null)
             {
                 return RedirectToAction("Index");
             }
+
             if (userRole == "Admin" || userRole == "Docente")
             {
                 return View(usuario);
@@ -90,19 +78,18 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
-            var usuarioModificar = _context.Usuario.Find(usuario.UsuarioId);
             if (string.IsNullOrEmpty(usuario.Nombres) || string.IsNullOrEmpty(usuario.Apellidos) || string.IsNullOrEmpty(usuario.Correo))
             {
                 ViewBag.Error = "Ingrese toda la información necesaria";
                 return View(usuario);
             }
+
+            var usuarioModificar = arProyectoBO.FindUserById(usuario.UsuarioId);
             if (usuarioModificar != null)
             {
-                
                 usuarioModificar.Nombres = usuario.Nombres;
                 usuarioModificar.Correo = usuario.Correo;
-                _context.Entry(usuarioModificar).State = EntityState.Modified;
-                _context.SaveChanges();
+                arProyectoBO.EditUser(usuarioModificar);
             }
             return RedirectToAction("Index");
         }
@@ -122,21 +109,25 @@ namespace ARProyectoWeb.Controllers
         {
             var usuarioCourseModel = new AddUserCourseViewModel();
             var userRole = HttpContext.Session.GetString("UserRole");
+            var cursos = new List<Course>();
+
             usuarioCourseModel.UsuarioId = usuarioId;
+            
             if (userRole == "Admin")
             {
-                ViewBag.CourseId = new SelectList(_context.Course, "CourseId", "Nombre");
+                cursos = arProyectoBO.FindCourses();
             }
             else if (userRole == "Docente")
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-                List<int> usuarioCourses = _context.UsuarioCourse.Where(u => u.UsuarioId == userId).Select(c => c.CourseId).Distinct().ToList();
-                ViewBag.CourseId = new SelectList(_context.Course.Where(c => usuarioCourses.Contains(c.CourseId)), "CourseId", "Nombre");
+                cursos = arProyectoBO.FindUsuarioCourses(userId);
             }
             else
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            ViewBag.CourseId = new SelectList(cursos, "CourseId", "Nombre");
             return View(usuarioCourseModel);
         }
 
@@ -145,10 +136,11 @@ namespace ARProyectoWeb.Controllers
         {
             /*Validar que no se agregue dos veces un usuario al mismo curso*/
             var usuarioCourse = new UsuarioCourse();
+
             usuarioCourse.UsuarioId = model.UsuarioId;
             usuarioCourse.CourseId = model.CourseId;
-            _context.UsuarioCourse.Add(usuarioCourse);
-            _context.SaveChanges();
+
+            arProyectoBO.AddUserCourse(usuarioCourse);
             return RedirectToAction("Index");
         }
     }
