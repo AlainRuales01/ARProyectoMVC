@@ -11,13 +11,7 @@ namespace ARProyectoWeb.Controllers
     [LoginFilter]
     public class CourseController : Controller
     {
-        private DataBaseContext _context;
         ARProyectoBO arProyectoBO = new ARProyectoBO();
-
-        public CourseController(DataBaseContext context)
-        {
-            _context = context;
-        }
 
         public IActionResult Index()
         {
@@ -137,9 +131,5 @@ namespace ARProyectoWeb.Controllers
             }
             return View(tasks);
         }
-
-
-
-
     }
 }

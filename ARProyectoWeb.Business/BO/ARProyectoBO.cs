@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ARProyectoWeb.Business.BO
@@ -15,7 +17,7 @@ namespace ARProyectoWeb.Business.BO
         /// </summary>
         /// <param name="usuarioId"></param>
         /// <returns></returns>
-        public Usuario FindUserById(int usuarioId)
+        public Usuario FindUsuarioById(int usuarioId)
         {
             using (DataBaseContext _context = new DataBaseContext())
             {
@@ -30,7 +32,7 @@ namespace ARProyectoWeb.Business.BO
         /// </summary>
         /// <param name="userRole"></param>
         /// <returns></returns>
-        public List<Usuario> FindUsersList(string userRole)
+        public List<Usuario> FindUsuariosList(string userRole)
         {
             var usuarios = new List<Usuario>();
             using (DataBaseContext _context = new DataBaseContext())
@@ -53,10 +55,24 @@ namespace ARProyectoWeb.Business.BO
         }
 
         /// <summary>
+        /// Devuelve todos los docentes creados
+        /// </summary>
+        /// <returns></returns>
+        public List<Usuario> FindDocentes()
+        {
+            var docentes = new List<Usuario>();
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                docentes = _context.Usuario.Where(u => u.Rol == "Docente").ToList();
+            }
+            return docentes;
+        }
+
+        /// <summary>
         /// Agrega nuevo usuario
         /// </summary>
         /// <param name="nuevoUsuario"></param>
-        public void AddNewUser(Usuario nuevoUsuario)
+        public void AddNewUsuario(Usuario nuevoUsuario)
         {
             using (DataBaseContext _context = new DataBaseContext())
             {
@@ -69,7 +85,7 @@ namespace ARProyectoWeb.Business.BO
         /// Edita un usuario creado
         /// </summary>
         /// <param name="usuario"></param>
-        public void EditUser(Usuario usuario)
+        public void EditUsuario(Usuario usuario)
         {
             using (DataBaseContext _context = new DataBaseContext())
             {
@@ -175,7 +191,7 @@ namespace ARProyectoWeb.Business.BO
         /// <summary>
         /// Edita un curso creado
         /// </summary>
-        /// <param name="cursoModificar"></param>
+        /// <param name="curso"></param>
         public void EditCourse(Course curso)
         {
             using (DataBaseContext _context = new DataBaseContext())
@@ -195,13 +211,133 @@ namespace ARProyectoWeb.Business.BO
         /// Agrega un usuario a un curso
         /// </summary>
         /// <param name="usuarioCourse"></param>
-        public void AddUserCourse(UsuarioCourse usuarioCourse)
+        public void AddUsuarioCourse(UsuarioCourse usuarioCourse)
         {
             using (DataBaseContext _context = new DataBaseContext())
             {
                 _context.UsuarioCourse.Add(usuarioCourse);
                 _context.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// Agrega una task a un curso
+        /// </summary>
+        /// <param name="taskCourse"></param>
+        public void AddTaskCourse(TaskCourse taskCourse)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                _context.TaskCourse.Add(taskCourse);
+                _context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Devuelve una task en base a un Id
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
+        public Data.Models.Task FindTaskById(int taskId)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var task = _context.Task.Find(taskId);
+                return task;
+            }
+
+        }
+
+        /// <summary>
+        /// Devuelve todas las tareas creadas
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        public List<Data.Models.Task> FindTasks()
+        {
+            List<Data.Models.Task> tasks = new List<Data.Models.Task>();
+
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                tasks = (from t in _context.Task
+                         join us in _context.Usuario on t.UsuarioId equals us.UsuarioId
+                         select new Data.Models.Task
+                         {
+                             TaskId = t.TaskId,
+                             UsuarioId = t.UsuarioId,
+                             Titulo = t.Titulo,
+                             Descripcion = t.Descripcion,
+                             UsuarioCreador = us
+                         }).ToList();
+            }
+            return tasks;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        public void AddNewTask(Data.Models.Task nuevoTask, int usuarioId)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var usuario = _context.Usuario.Where(u => u.UsuarioId == usuarioId).FirstOrDefault();
+
+                if (usuario.Rol == "Docente")
+                {
+                    nuevoTask.UsuarioId = usuario.UsuarioId;
+                }
+
+                _context.Task.Add(nuevoTask);
+                _context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Edita una task
+        /// </summary>
+        /// <param name="task"></param>
+        public void EditTask(Data.Models.Task task)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var tareaModificar = _context.Task.Find(task.TaskId);
+                if (tareaModificar != null)
+                {
+                    tareaModificar.Titulo = task.Titulo;
+                    tareaModificar.Descripcion = task.Descripcion;
+                    tareaModificar.UsuarioId = task.UsuarioId;
+                    _context.Entry(tareaModificar).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Devuelve las tareas creadas por el usuario especificado
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        public List<Data.Models.Task> FindUsuarioTasks(int usuarioId)
+        {
+            List<Data.Models.Task> tasks = new List<Data.Models.Task>();
+
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                tasks = (from t in _context.Task
+                         join us in _context.Usuario on t.UsuarioId equals us.UsuarioId
+                         where t.UsuarioId == usuarioId
+                         select new Data.Models.Task
+                         {
+                             TaskId = t.TaskId,
+                             UsuarioId = t.UsuarioId,
+                             Titulo = t.Titulo,
+                             Descripcion = t.Descripcion,
+                             UsuarioCreador = us
+                         }).ToList();
+            }
+            return tasks;
         }
     }
 }

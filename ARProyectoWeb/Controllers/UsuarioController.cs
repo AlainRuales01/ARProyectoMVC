@@ -19,7 +19,7 @@ namespace ARProyectoWeb.Controllers
             List<Usuario> usuarios = new List<Usuario>();
             var userRole = HttpContext.Session.GetString("UserRole");
             
-            arProyectoBO.FindUsersList(userRole);
+            arProyectoBO.FindUsuariosList(userRole);
 
             return View(usuarios);
         }
@@ -52,13 +52,13 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Ingrese toda la información necesaria";
                 return View(nuevoUsuario);
             }
-            arProyectoBO.AddNewUser(nuevoUsuario);
+            arProyectoBO.AddNewUsuario(nuevoUsuario);
             return RedirectToAction("Index");
         }
 
         public IActionResult Edit(int UsuarioId)
         {
-            var usuario = arProyectoBO.FindUserById(UsuarioId);
+            var usuario = arProyectoBO.FindUsuarioById(UsuarioId);
             var userRole = HttpContext.Session.GetString("UserRole");
             if (usuario == null)
             {
@@ -83,7 +83,7 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Ingrese toda la información necesaria";
                 return View(usuario);
             }
-            arProyectoBO.EditUser(usuario);
+            arProyectoBO.EditUsuario(usuario);
             return RedirectToAction("Index");
         }
 
@@ -133,7 +133,7 @@ namespace ARProyectoWeb.Controllers
             usuarioCourse.UsuarioId = model.UsuarioId;
             usuarioCourse.CourseId = model.CourseId;
 
-            arProyectoBO.AddUserCourse(usuarioCourse);
+            arProyectoBO.AddUsuarioCourse(usuarioCourse);
             return RedirectToAction("Index");
         }
     }

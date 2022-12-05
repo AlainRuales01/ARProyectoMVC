@@ -1,4 +1,5 @@
-﻿using ARProyectoWeb.Data.Models;
+﻿using ARProyectoWeb.Business.BO;
+using ARProyectoWeb.Data.Models;
 using ARProyectoWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,12 +9,8 @@ namespace ARProyectoWeb.Controllers
 {
     public class TaskController : Controller
     {
-        private DataBaseContext _context;
 
-        public TaskController(DataBaseContext context)
-        {
-            _context = context;
-        }
+        ARProyectoBO arProyectoBO = new ARProyectoBO();
 
         public IActionResult Index()
         {
@@ -22,30 +19,11 @@ namespace ARProyectoWeb.Controllers
             if (userRole == "Docente")
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-                tasks = (from t in _context.Task
-                         join us in _context.Usuario on t.UsuarioId equals us.UsuarioId
-                         where t.UsuarioId == userId
-                         select new Data.Models.Task
-                         {
-                             TaskId = t.TaskId,
-                             UsuarioId = t.UsuarioId,
-                             Titulo = t.Titulo,
-                             Descripcion = t.Descripcion,
-                             UsuarioCreador = us
-                         }).ToList();
+                tasks = arProyectoBO.FindUsuarioTasks(userId);
             }
             else if (userRole == "Admin")
             {
-                tasks = (from t in _context.Task
-                         join us in _context.Usuario on t.UsuarioId equals us.UsuarioId
-                         select new Data.Models.Task
-                         {
-                             TaskId = t.TaskId,
-                             UsuarioId = t.UsuarioId,
-                             Titulo = t.Titulo,
-                             Descripcion = t.Descripcion,
-                             UsuarioCreador = us
-                         }).ToList();
+                tasks = arProyectoBO.FindTasks();
             }
             else
             {
@@ -57,12 +35,12 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Create()
         {
             var userRole = HttpContext.Session.GetString("UserRole");
-            if(userRole == "Admin")
+            if (userRole == "Admin")
             {
-                ViewBag.UsuarioId = new SelectList(_context.Usuario.Where(u => u.Rol == "Docente"), "UsuarioId", "Correo");
-                
+                var docentes = arProyectoBO.FindDocentes();
+                ViewBag.UsuarioId = new SelectList(docentes, "UsuarioId", "Correo");
             }
-            else if(userRole == "Estudiante")
+            else if (userRole == "Estudiante")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -81,54 +59,50 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
                 return View(nuevoTask);
             }
-            if(userRole == "Docente")
-            {
-                var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-                nuevoTask.UsuarioId = userId;
-            }
-            _context.Task.Add(nuevoTask);
-            _context.SaveChanges();
+
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+            arProyectoBO.AddNewTask(nuevoTask, userId);
+
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? taskId)
-        {
-            var userRole = HttpContext.Session.GetString("UserRole");
-            if(userRole != "Admin")
-            {
-                return RedirectToAction("Index");
-            }
-            ViewBag.UsuarioId = new SelectList(_context.Usuario.Where(u => u.Rol == "Docente"), "UsuarioId", "Correo");
-            var curso = _context.Task.Find(taskId);
-            if (curso == null)
-            {
-                return RedirectToAction("Index");
-            }
-            return View(curso);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Data.Models.Task tarea)
+        public IActionResult Edit(int taskId)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
             if (userRole != "Admin")
             {
                 return RedirectToAction("Index");
             }
-            var tareaModificar = _context.Task.Find(tarea.TaskId);
-            if (string.IsNullOrEmpty(tarea.Titulo) || string.IsNullOrEmpty(tarea.Descripcion))
+
+            var docentes = arProyectoBO.FindDocentes();
+
+            ViewBag.UsuarioId = new SelectList(docentes, "UsuarioId", "Correo");
+
+            var task = arProyectoBO.FindTaskById(taskId);
+            if (task == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(task);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Data.Models.Task task)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Admin")
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (string.IsNullOrEmpty(task.Titulo) || string.IsNullOrEmpty(task.Descripcion))
             {
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
-                return View(tarea);
+                return View(task);
             }
-            if (tareaModificar != null)
-            {
-                tareaModificar.Titulo = tarea.Titulo;
-                tareaModificar.Descripcion = tarea.Descripcion;
-                tareaModificar.UsuarioId = tarea.UsuarioId;
-                _context.Entry(tareaModificar).State = EntityState.Modified;
-                _context.SaveChanges();
-            }
+
+            arProyectoBO.EditTask(task);
+
             return RedirectToAction("Index");
         }
 
@@ -136,12 +110,13 @@ namespace ARProyectoWeb.Controllers
         {
             var taskCourseModel = new AddTaskCourseViewModel();
             var userRole = HttpContext.Session.GetString("UserRole");
+            var cursos = new List<Course>();
             taskCourseModel.TaskId = taskId;
             if (userRole == "Docente")
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-                List<int> usuarioCourses = _context.UsuarioCourse.Where(u => u.UsuarioId == userId).Select(c => c.CourseId).Distinct().ToList();
-                ViewBag.CourseId = new SelectList(_context.Course.Where(c => usuarioCourses.Contains(c.CourseId)), "CourseId", "Nombre");
+                cursos = arProyectoBO.FindUsuarioCourses(userId);
+                ViewBag.CourseId = new SelectList(cursos, "CourseId", "Nombre");
             }
             else
             {
@@ -158,8 +133,9 @@ namespace ARProyectoWeb.Controllers
             taskCourse.TaskId = model.TaskId;
             taskCourse.CourseId = model.CourseId;
             taskCourse.CalificacionProfesor = model.Calificacion;
-            _context.TaskCourse.Add(taskCourse);
-            _context.SaveChanges();
+            
+            arProyectoBO.AddTaskCourse(taskCourse);
+
             return RedirectToAction("Index");
         }
     }
