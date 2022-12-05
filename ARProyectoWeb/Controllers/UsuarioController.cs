@@ -83,14 +83,7 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Ingrese toda la información necesaria";
                 return View(usuario);
             }
-
-            var usuarioModificar = arProyectoBO.FindUserById(usuario.UsuarioId);
-            if (usuarioModificar != null)
-            {
-                usuarioModificar.Nombres = usuario.Nombres;
-                usuarioModificar.Correo = usuario.Correo;
-                arProyectoBO.EditUser(usuarioModificar);
-            }
+            arProyectoBO.EditUser(usuario);
             return RedirectToAction("Index");
         }
 
