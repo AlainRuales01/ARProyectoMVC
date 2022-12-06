@@ -1,7 +1,7 @@
 ﻿using ARProyectoWeb.Business.BO;
+using ARProyectoWeb.Business.Models;
 using ARProyectoWeb.Data.Models;
 using ARProyectoWeb.Utilities;
-using ARProyectoWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;

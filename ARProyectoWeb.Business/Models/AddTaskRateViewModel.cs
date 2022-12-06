@@ -1,6 +1,6 @@
 ﻿using ARProyectoWeb.Data.Models;
 
-namespace ARProyectoWeb.ViewModels
+namespace ARProyectoWeb.Business.Models
 {
     public class AddTaskRateViewModel
     {
@@ -8,7 +8,6 @@ namespace ARProyectoWeb.ViewModels
         public int TaskId { get; set; }
         public int UsuarioId { get; set; }
         public List<UsuarioModel> Estudiantes { get; set; }
-        public List<TaskRate> CalificacionesEstudiantes { get; set; }
         public double Calificacion { get; set; }
     }
 
@@ -20,5 +19,6 @@ namespace ARProyectoWeb.ViewModels
         public string Correo { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public double Calificacion { get; set; }
+        public double CalificacionUsuario { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model ARProyectoWeb.ViewModels.AddTaskRateViewModel
+﻿@model ARProyectoWeb.Business.Models.AddTaskRateViewModel
 
 @{
     ViewData["Title"] = "Calificaciones";
@@ -25,13 +25,13 @@
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Fecha de nacimiento</th>
-                    <th>Calificacion de usuario</th>
+                    <th>Calificación actual</th>
+                    <th>Nueva calificación</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Estudiantes)
                 {
-                    var calificacionEstudiante = Model.CalificacionesEstudiantes.Where(c => c.UsuarioId == item.UsuarioId).Select(c => c.Calificacion).FirstOrDefault();
                     <tr class="align-middle">
                         <td>
                             @item.Nombres @item.Apellidos
@@ -41,6 +41,9 @@
                         </td>
                         <td>
                             @item.FechaNacimiento.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.Calificacion
                         </td>
                         <td>
                             <form method="post" asp-route-UsuarioId=@item.UsuarioId asp-route-CourseId=@Model.CourseId asp-route-TaskId=@Model.TaskId asp-route-TaskId=@item.Calificacion>

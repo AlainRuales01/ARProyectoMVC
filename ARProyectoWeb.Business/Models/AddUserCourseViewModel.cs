@@ -1,4 +1,4 @@
-﻿namespace ARProyectoWeb.ViewModels
+﻿namespace ARProyectoWeb.Business.Models
 {
     public class AddUserCourseViewModel
     {

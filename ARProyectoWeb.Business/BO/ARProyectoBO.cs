@@ -1,4 +1,5 @@
-﻿using ARProyectoWeb.Data.Models;
+﻿using ARProyectoWeb.Business.Models;
+using ARProyectoWeb.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -338,6 +339,49 @@ namespace ARProyectoWeb.Business.BO
                          }).ToList();
             }
             return tasks;
+        }
+
+        /// <summary>
+        /// Obtiene los estudiantes con sus respectivas calificaciones en las diferentes tareas asignadas a un curso
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
+        public List<UsuarioModel> FindUsuarioTaskRates(int courseId, int taskId)
+        {
+            var usuariosModel = new List<UsuarioModel>();
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var usuariosCourseId = _context.UsuarioCourse.Where(c => c.CourseId == courseId).Select(u => u.UsuarioId).ToList();
+                var usuarios = _context.Usuario.Where(u => usuariosCourseId.Contains(u.UsuarioId) && u.Rol != "Docente").ToList();
+
+                var taskCourses = _context.TaskCourse.Where(t => t.CourseId == courseId && t.TaskId == taskId).FirstOrDefault();
+                var taskRates = _context.TaskRate.Where(t => t.TaskCourseId == taskCourses.TaskCourseId).ToList();
+
+                foreach (var item in usuarios)
+                {
+                    var usuarioModel = new UsuarioModel();
+
+                    usuarioModel.UsuarioId = item.UsuarioId;
+                    usuarioModel.Nombres = item.Nombres;
+                    usuarioModel.Apellidos = item.Apellidos;
+                    usuarioModel.Correo = item.Correo;
+                    usuarioModel.FechaNacimiento = item.FechaNacimiento;
+
+                    var usuarioTaskRate = taskRates.Where(t => t.UsuarioId == item.UsuarioId).FirstOrDefault();
+
+                    if(usuarioTaskRate != null)
+                    {
+                        usuarioModel.Calificacion = usuarioTaskRate.Calificacion;
+                        usuarioModel.CalificacionUsuario = usuarioTaskRate.CalificacionUsuario;
+                    }
+
+                    usuariosModel.Add(usuarioModel);
+                    
+                }
+            }
+            return usuariosModel;
+
         }
     }
 }

@@ -112,6 +112,7 @@ namespace ARProyectoWeb.Controllers
         {
             var userRole = HttpContext.Session.GetString("UserRole");
             var cursos = new List<Course>();
+            ViewBag.courseSelectedId = courseId;
             if (userRole == "Admin")
             {
                 cursos = arProyectoBO.FindCourses();
