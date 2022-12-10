@@ -40,7 +40,7 @@ namespace ARProyectoWeb.Controllers
 
         public IActionResult TaskRateStudent(int courseId)
         {
-            `var addTaskRate = new AddTaskRateStudentViewModel();
+            var addTaskRate = new AddTaskRateStudentViewModel();
 
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
 
