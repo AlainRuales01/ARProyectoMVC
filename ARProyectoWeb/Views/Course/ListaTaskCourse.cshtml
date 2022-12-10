@@ -47,7 +47,14 @@
                             @item.Descripcion
                         </td>
                         <td>
-                            @Html.ActionLink("Agregar calificaciones","TaskRateTeacher","TaskRate",new{courseId = ViewBag.courseSelectedId, taskId = item.TaskId},new{@class="btn btn-primary"})
+                            @if (Context.Session.GetString("UserRole") == "Docente"){
+                                @Html.ActionLink("Agregar calificaciones","TaskRateTeacher","TaskRate",new{courseId = ViewBag.courseSelectedId, taskId = item.TaskId},new{@class="btn btn-primary"})
+                            }
+                            else if (Context.Session.GetString("UserRole") == "Estudiante")
+                            {
+                                @Html.ActionLink("Agregar calificación a tarea","TaskRateStudent","TaskRate",new{courseId = ViewBag.courseSelectedId, taskId = item.TaskId},new{@class="btn btn-primary"})
+                            }
+                            
                             @*@Html.ActionLink("Eliminar","Delete",new{usuarioId=item.UsuarioId},new{@class="btn btn-danger"})*@
                         </td>
                     </tr>

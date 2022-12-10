@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -370,18 +371,130 @@ namespace ARProyectoWeb.Business.BO
 
                     var usuarioTaskRate = taskRates.Where(t => t.UsuarioId == item.UsuarioId).FirstOrDefault();
 
-                    if(usuarioTaskRate != null)
+                    if (usuarioTaskRate != null)
                     {
                         usuarioModel.Calificacion = usuarioTaskRate.Calificacion;
                         usuarioModel.CalificacionUsuario = usuarioTaskRate.CalificacionUsuario;
                     }
 
                     usuariosModel.Add(usuarioModel);
-                    
+
                 }
             }
             return usuariosModel;
+        }
 
+        /// <summary>
+        /// Obtiene las tareas de un curso con sus las calificaciones de las tareas para un usuario
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        public List<TaskModel> FindCourseTaskRates(int courseId, int usuarioId)
+        {
+            var tasksModel = new List<TaskModel>();
+            //var usuariosModel = new List<UsuarioModel>();
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var taskCourse = _context.TaskCourse.Where(c => c.CourseId == courseId).ToList();
+
+                var tasks = (from tc in taskCourse
+                             join t in _context.Task on tc.TaskId equals t.TaskId
+                             select t).ToList();
+
+
+                var taskRates = (from tc in taskCourse
+                                 join tr in _context.TaskRate on tc.TaskCourseId equals tr.TaskCourseId
+                                 select new
+                                 {
+                                     TaskId = tc.TaskId,
+                                     Calificacion = tr.Calificacion,
+                                     CalificacionUsuario = tr.CalificacionUsuario
+                                 }).ToList();
+
+                foreach (var item in tasks)
+                {
+                    var taskModel = new TaskModel();
+
+                    taskModel.TaskId = item.TaskId;
+                    taskModel.Titulo = item.Titulo;
+                    taskModel.Descripcion = item.Descripcion;
+
+                    var taskRate = taskRates.Where(t => t.TaskId == item.TaskId).FirstOrDefault();
+
+                    if (taskRate != null)
+                    {
+                        taskModel.Calificacion = taskRate.Calificacion;
+                        taskModel.CalificacionUsuario = taskRate.CalificacionUsuario;
+                    }
+
+                    tasksModel.Add(taskModel);
+
+                }
+            }
+            return tasksModel;
+        }
+
+
+
+        /// <summary>
+        /// Agrega una calificación del profesor hacia un estudiante en una tarea
+        /// </summary>
+        /// <param name="model"></param>
+        public void AddTaskRate(AddTaskRateViewModel model)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var taskCourse = _context.TaskCourse.Where(t => t.CourseId == model.CourseId && t.TaskId == model.TaskId).FirstOrDefault();
+
+                TaskRate taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId).FirstOrDefault();
+
+                if (taskRate == null)
+                {
+                    TaskRate rate = new TaskRate();
+                    rate.TaskCourseId = taskCourse.TaskCourseId;
+                    rate.UsuarioId = model.UsuarioId;
+                    rate.Calificacion = model.Calificacion;
+                    _context.TaskRate.Add(rate);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    taskRate.Calificacion = model.Calificacion;
+                    _context.Entry(taskRate).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Agrega una calificacion de un usuario hacia una tarea
+        /// </summary>
+        /// <param name="model"></param>
+        public void AddUsuarioTaskRate(AddTaskRateStudentViewModel model)
+        {
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+                var taskCourse = _context.TaskCourse.Where(t => t.CourseId == model.CourseId && t.TaskId == model.TaskId).FirstOrDefault();
+
+                TaskRate taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId).FirstOrDefault();
+
+                if (taskRate == null)
+                {
+                    TaskRate rate = new TaskRate();
+                    rate.TaskCourseId = taskCourse.TaskCourseId;
+                    rate.UsuarioId = model.UsuarioId;
+                    rate.CalificacionUsuario = model.Calificacion;
+                    _context.TaskRate.Add(rate);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    taskRate.CalificacionUsuario = model.Calificacion;
+                    _context.Entry(taskRate).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 }

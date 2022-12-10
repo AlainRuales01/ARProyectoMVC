@@ -1,4 +1,4 @@
-﻿@model ARProyectoWeb.Business.Models.AddTaskRateViewModel
+﻿@model ARProyectoWeb.Business.Models.AddTaskRateStudentViewModel
 
 @{
     ViewData["Title"] = "Calificaciones";
@@ -15,38 +15,40 @@
 }
 <br />
 <br />
-
-@if (Model.Estudiantes.Count > 0)
+@{
+    var userRole = Context.Session.GetString("UserRole");
+}
+@if (Model.Tareas.Count > 0)
 {
     <div class="table-responsive">
         <table class="table">
             <thead class="table-dark">
                 <tr>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Fecha de nacimiento</th>
-                    <th>Calificación actual</th>
-                    <th>Nueva calificación</th>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Calificación</th>
+                    <th>Mi calificación</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Estudiantes)
+                @foreach (var item in Model.Tareas)
                 {
                     <tr class="align-middle">
                         <td>
-                            @item.Nombres @item.Apellidos
+                            @item.Titulo
                         </td>
                         <td>
-                            @item.Correo
-                        </td>
-                        <td>
-                            @item.FechaNacimiento.ToShortDateString()
+                            @item.Descripcion
                         </td>
                         <td>
                             @item.Calificacion
                         </td>
                         <td>
-                            <form method="post" asp-route-UsuarioId=@item.UsuarioId asp-route-CourseId=@Model.CourseId asp-route-TaskId=@Model.TaskId>
+                            @item.CalificacionUsuario
+                        </td>
+                        <td>
+                            <form method="post" asp-route-UsuarioId=@Model.UsuarioId asp-route-CourseId=@Model.CourseId asp-route-TaskId=@item.TaskId>
                                 <div>
                                     @Html.TextBoxFor(model => model.Calificacion, new{@class = "form-control"})
                                 </div>
@@ -65,5 +67,3 @@ else
         <h2>No existen registros</h2>
     </div>
 }
-
-

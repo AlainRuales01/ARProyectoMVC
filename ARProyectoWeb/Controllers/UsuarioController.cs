@@ -19,7 +19,7 @@ namespace ARProyectoWeb.Controllers
             List<Usuario> usuarios = new List<Usuario>();
             var userRole = HttpContext.Session.GetString("UserRole");
             
-            arProyectoBO.FindUsuariosList(userRole);
+            usuarios = arProyectoBO.FindUsuariosList(userRole);
 
             return View(usuarios);
         }

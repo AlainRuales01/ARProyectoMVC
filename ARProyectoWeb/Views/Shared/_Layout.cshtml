@@ -19,24 +19,39 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Context.Session.GetString("UserRole") != "Estudiante")
+                        @{
+                            var userRole = Context.Session.GetString("UserRole");
+                        }
+
+                        @if (userRole == "Admin" || userRole == "Docente")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Cursos</a>
-                            </li>
+                        }
+
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Cursos</a>
+                        </li>
+
+                        @if (userRole == "Admin" || userRole == "Docente")
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Index">Tasks</a>
                             </li>
+
+                        }
+                        @if (userRole == "Admin" || userRole == "Docente")
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaUsuariosCourse">Listado de estudiantes por cursos</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaTaskCourse">Listado de tasks por cursos</a>
-                            </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaTaskCourse">Listado de tasks por cursos</a>
+                        </li>
+                        
                     </ul>
                     <div class="px-4">
                         @Context.Session.GetString("UserName")
