@@ -18,7 +18,10 @@ namespace ARProyectoWeb.Controllers
         {
             List<Usuario> usuarios = new List<Usuario>();
             var userRole = HttpContext.Session.GetString("UserRole");
-            
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             usuarios = arProyectoBO.FindUsuariosList(userRole);
 
             return View(usuarios);
@@ -44,7 +47,7 @@ namespace ARProyectoWeb.Controllers
             var userRole = HttpContext.Session.GetString("UserRole");
             if (userRole == "Estudiante")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             if (string.IsNullOrEmpty(nuevoUsuario.Nombres) || string.IsNullOrEmpty(nuevoUsuario.Apellidos) || string.IsNullOrEmpty(nuevoUsuario.Correo) || string.IsNullOrEmpty(nuevoUsuario.Clave) || nuevoUsuario.FechaNacimiento == default(DateTime))
@@ -78,6 +81,12 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (string.IsNullOrEmpty(usuario.Nombres) || string.IsNullOrEmpty(usuario.Apellidos) || string.IsNullOrEmpty(usuario.Correo))
             {
                 ViewBag.Error = "Ingrese toda la información necesaria";
@@ -99,9 +108,14 @@ namespace ARProyectoWeb.Controllers
         //}
 
         public IActionResult AddUserCourse(int usuarioId)
-        {
-            var usuarioCourseModel = new AddUserCourseViewModel();
+        {           
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var usuarioCourseModel = new AddUserCourseViewModel();
             var cursos = new List<Course>();
 
             usuarioCourseModel.UsuarioId = usuarioId;
@@ -115,10 +129,6 @@ namespace ARProyectoWeb.Controllers
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
                 cursos = arProyectoBO.FindUsuarioCourses(userId);
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
 
             ViewBag.CourseId = new SelectList(cursos, "CourseId", "Nombre");
             return View(usuarioCourseModel);
@@ -127,7 +137,12 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult AddUserCourse(AddUserCourseViewModel model)
         {
-            /*Validar que no se agregue dos veces un usuario al mismo curso*/
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var usuarioCourse = new UsuarioCourse();
 
             usuarioCourse.UsuarioId = model.UsuarioId;

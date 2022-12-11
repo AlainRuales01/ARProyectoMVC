@@ -16,6 +16,11 @@ namespace ARProyectoWeb.Controllers
 
         public IActionResult TaskRateTeacher(int courseId, int taskId)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Docente")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var addTaskRate = new AddTaskRateViewModel();
 
             addTaskRate.Estudiantes = arProyectoBO.FindUsuarioTaskRates(courseId, taskId);
@@ -28,18 +33,35 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult TaskRateTeacher(AddTaskRateViewModel model)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Docente")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var addTaskRate = new AddTaskRateViewModel();
             addTaskRate.Estudiantes = arProyectoBO.FindUsuarioTaskRates(model.CourseId, model.TaskId);
             addTaskRate.CourseId = model.CourseId;
             addTaskRate.TaskId = model.TaskId;
 
-            arProyectoBO.AddTaskRate(model);
+            if (model.Calificacion > 0 && model.Calificacion <= 10)
+            {
+                arProyectoBO.AddTaskRate(model);
+            }
+            else
+            {
+                ViewBag.Error = "Ingrese un número entre 1 y 10";
+            }
 
             return View(addTaskRate);
         }
 
         public IActionResult TaskRateStudent(int courseId)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var addTaskRate = new AddTaskRateStudentViewModel();
 
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
@@ -54,6 +76,11 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult TaskRateStudent(AddTaskRateStudentViewModel model)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
             var addTaskRate = new AddTaskRateStudentViewModel();
 
@@ -61,9 +88,16 @@ namespace ARProyectoWeb.Controllers
             addTaskRate.CourseId = model.CourseId;
             addTaskRate.UsuarioId = userId;
 
-            arProyectoBO.AddUsuarioTaskRate(model);
-
-            return View();
+            if (model.Calificacion > 0 && model.Calificacion <= 10)
+            {
+                arProyectoBO.AddUsuarioTaskRate(model);
+            }
+            else
+            {
+                ViewBag.Error = "Ingrese un número entre 1 y 10";
+            }
+            
+            return View(addTaskRate);
         }
     }
 }

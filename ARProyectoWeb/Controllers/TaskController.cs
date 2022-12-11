@@ -1,12 +1,14 @@
 ﻿using ARProyectoWeb.Business.BO;
 using ARProyectoWeb.Business.Models;
 using ARProyectoWeb.Data.Models;
+using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace ARProyectoWeb.Controllers
 {
+    [LoginFilter]
     public class TaskController : Controller
     {
 
@@ -15,6 +17,11 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Index()
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             List<Data.Models.Task> tasks = new List<Data.Models.Task>();
             if (userRole == "Docente")
             {
@@ -25,25 +32,23 @@ namespace ARProyectoWeb.Controllers
             {
                 tasks = arProyectoBO.FindTasks();
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
             return View(tasks);
         }
 
         public IActionResult Create()
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (userRole == "Admin")
             {
                 var docentes = arProyectoBO.FindDocentes();
                 ViewBag.UsuarioId = new SelectList(docentes, "UsuarioId", "Correo");
             }
-            else if (userRole == "Estudiante")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
             return View();
 
 
@@ -53,6 +58,10 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Create(Data.Models.Task nuevoTask)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             if (string.IsNullOrEmpty(nuevoTask.Titulo) || string.IsNullOrEmpty(nuevoTask.Descripcion))
             {
@@ -69,9 +78,10 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Edit(int taskId)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+
             if (userRole != "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var docentes = arProyectoBO.FindDocentes();
@@ -92,7 +102,7 @@ namespace ARProyectoWeb.Controllers
             var userRole = HttpContext.Session.GetString("UserRole");
             if (userRole != "Admin")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             if (string.IsNullOrEmpty(task.Titulo) || string.IsNullOrEmpty(task.Descripcion))
@@ -128,15 +138,32 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult AddTaskCourse(AddTaskCourseViewModel model)
         {
-            /*Validar que no se agregue dos veces un usuario al mismo curso*/
-            var taskCourse = new TaskCourse();
-            taskCourse.TaskId = model.TaskId;
-            taskCourse.CourseId = model.CourseId;
-            taskCourse.CalificacionProfesor = model.Calificacion;
-            
-            arProyectoBO.AddTaskCourse(taskCourse);
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Docente")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
-            return RedirectToAction("Index");
+            if(model.Calificacion > 0 && model.Calificacion <= 10)
+            {
+                var taskCourse = new TaskCourse();
+                taskCourse.TaskId = model.TaskId;
+                taskCourse.CourseId = model.CourseId;
+                taskCourse.CalificacionProfesor = model.Calificacion;
+
+                arProyectoBO.AddTaskCourse(taskCourse);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+                var cursos = arProyectoBO.FindUsuarioCourses(userId);
+                ViewBag.CourseId = new SelectList(cursos, "CourseId", "Nombre");
+                ViewBag.Error = "Ingrese un número entre 1 y 10";
+                return View(model);
+            }
+            
         }
     }
 }

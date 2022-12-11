@@ -47,11 +47,6 @@ namespace ARProyectoWeb.Business.BO
                 {
                     usuarios = _context.Usuario.Where(u => u.Rol != "Admin" && u.Rol != "Docente").ToList();
                 }
-                else
-                {
-
-                    // Retornar error
-                }
             }
             return usuarios;
         }
@@ -284,7 +279,7 @@ namespace ARProyectoWeb.Business.BO
         }
 
         /// <summary>
-        /// 
+        /// Agrega una nueva task
         /// </summary>
         /// <param name="usuarioId"></param>
         /// <returns></returns>

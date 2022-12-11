@@ -51,8 +51,10 @@
                             @item.FechaFin.ToShortDateString()
                         </td>
                         <td>
-                            @Html.ActionLink("Editar","Edit",new{courseId=item.CourseId},new{@class="btn btn-primary"})
-                            @*@Html.ActionLink("Eliminar","Delete",new{courseId=item.CourseId},new{@class="btn btn-danger"})*@
+                            @if (Context.Session.GetString("UserRole") != "Estudiante")
+                            {
+                                @Html.ActionLink("Editar","Edit",new{courseId=item.CourseId},new{@class="btn btn-primary"})
+                            }
                         </td>
                     </tr>
                 }

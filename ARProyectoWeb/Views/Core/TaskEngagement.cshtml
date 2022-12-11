@@ -54,9 +54,24 @@
                         <td>
                             @item.CalificacionUsuarioPromedio
                         </td>
-                        <td>
-                            @item.CalificacionEngagement
-                        </td>
+                        @if (item.CalificacionEngagement > 8)
+                        {
+                            <td class="bg-info">
+                                @item.CalificacionEngagement
+                            </td>
+                        }
+                        else if (item.CalificacionEngagement < 8 && item.CalificacionEngagement > 6)
+                        {
+                            <td class="bg-warning">
+                                @item.CalificacionEngagement
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="bg-danger">
+                                @item.CalificacionEngagement
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

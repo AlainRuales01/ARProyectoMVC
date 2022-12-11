@@ -8,11 +8,21 @@ namespace ARProyectoWeb.Controllers
     {
         public IActionResult RecursoSelection()
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
         public IActionResult EngagementSelection()
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
     }

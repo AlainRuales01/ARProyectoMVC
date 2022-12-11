@@ -1,12 +1,14 @@
 ﻿using ARProyectoWeb.Business.BO;
 using ARProyectoWeb.Business.Models;
 using ARProyectoWeb.Data.Models;
+using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
 namespace ARProyectoWeb.Controllers
 {
+    [LoginFilter]
     public class CoreController : Controller
     {
         ARProyectoBO arProyectoBO = new ARProyectoBO();

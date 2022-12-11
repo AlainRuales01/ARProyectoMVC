@@ -16,8 +16,12 @@ namespace ARProyectoWeb.Controllers
         public IActionResult Index()
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<Course> cursos = new List<Course>();
-            if (userRole == "Docente" || userRole == "Estudiante")
+            if (userRole == "Docente")
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
                 cursos = arProyectoBO.FindUsuarioCourses(userId);
@@ -25,10 +29,6 @@ namespace ARProyectoWeb.Controllers
             else if (userRole == "Admin")
             {
                 cursos = arProyectoBO.FindCourses();
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
             }
             return View(cursos);
         }
@@ -50,6 +50,12 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult Create(Course nuevoCurso)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (string.IsNullOrEmpty(nuevoCurso.Nombre) || string.IsNullOrEmpty(nuevoCurso.Descripcion) || nuevoCurso.FechaInicio == default(DateTime) || nuevoCurso.FechaFin == default(DateTime))
             {
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
@@ -63,6 +69,12 @@ namespace ARProyectoWeb.Controllers
 
         public IActionResult Edit(int CourseId)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var curso = arProyectoBO.FindCourseById(CourseId);
             if (curso == null)
             {
@@ -74,6 +86,12 @@ namespace ARProyectoWeb.Controllers
         [HttpPost]
         public IActionResult Edit(Course curso)
         {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (string.IsNullOrEmpty(curso.Nombre) || string.IsNullOrEmpty(curso.Descripcion))
             {
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
@@ -86,12 +104,17 @@ namespace ARProyectoWeb.Controllers
         public IActionResult ListaUsuariosCourse(int courseId)
         {
             var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Estudiante")
+            {
+                return RedirectToAction("Index","Home");
+            }
+
             var cursos = new List<Course>();
             if (userRole == "Admin")
             {
                 cursos = arProyectoBO.FindCourses();
             }
-            else if (userRole == "Docente" || userRole == "Estudiante")
+            else if (userRole == "Docente")
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
                 cursos = arProyectoBO.FindUsuarioCourses(userId);
