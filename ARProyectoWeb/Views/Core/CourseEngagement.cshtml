@@ -1,0 +1,84 @@
+﻿@model List<ARProyectoWeb.Business.Models.EngagementInformationViewModel>
+
+@{
+    ViewData["Title"] = "Análisis de datos";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="container">
+        <div class="alert alert-primary">
+            @ViewBag.Error
+        </div>
+    </div>
+}
+<br />
+<br />
+
+@using (Html.BeginForm())
+{
+    <p>Seleccioné un curso</p>
+    <div class="d-flex">
+        @Html.DropDownList("CourseId", null, htmlAttributes: new { @class = "flex-fill p-2" })
+        <input value="Buscar" type="submit" />
+    </div>
+
+}
+
+@if (Model.Count > 0)
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Task</th>
+                    <th>Calificación de docente</th>
+                    <th>Calificación promedio</th>
+                    <th>Calificación promedio de estudiante</th>
+                    <th>Calificación Engagement</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="align-middle">
+                        <td>
+                            @item.Nombre
+                        </td>
+                        <td>
+                            @item.CalificacionProfesor
+                        </td>
+                        <td>
+                            @item.CalificacionPromedio
+                        </td>
+                        <td>
+                            @item.CalificacionUsuarioPromedio
+                        </td>
+                        @if(item.CalificacionEngagement > 8){
+                            <td class="bg-info">
+                                @item.CalificacionEngagement
+                            </td>
+                        }else if(item.CalificacionEngagement < 8 && item.CalificacionEngagement > 6)
+                        {
+                            <td class="bg-warning">
+                                @item.CalificacionEngagement
+                            </td>
+                        }else
+                        {
+                            <td class="bg-danger">
+                                @item.CalificacionEngagement
+                            </td>
+                        }
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div>
+        <h2>No existen registros</h2>
+    </div>
+}

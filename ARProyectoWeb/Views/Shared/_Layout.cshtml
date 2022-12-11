@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ARProyectoWeb.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Styles/Styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -26,32 +27,26 @@
                         @if (userRole == "Admin" || userRole == "Docente")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Selection" asp-action="RecursoSelection">Administrar recursos</a>
                             </li>
                         }
-
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Cursos</a>
-                        </li>
 
                         @if (userRole == "Admin" || userRole == "Docente")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Index">Tasks</a>
-                            </li>
-
-                        }
-                        @if (userRole == "Admin" || userRole == "Docente")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaUsuariosCourse">Listado de estudiantes por cursos</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaUsuariosCourse">Listado de estudiantes</a>
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaTaskCourse">Listado de tasks por cursos</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="ListaTaskCourse">Listado de tasks</a>
                         </li>
-                        
+                        @if (userRole == "Admin" || userRole == "Docente")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Selection" asp-action="EngagementSelection">Análisis de engagement</a>
+                            </li>
+                        }
+
                     </ul>
                     <div class="px-4">
                         @Context.Session.GetString("UserName")
