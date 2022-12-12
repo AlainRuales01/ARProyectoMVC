@@ -3,6 +3,7 @@ using ARProyectoWeb.Data.Models;
 using ARProyectoWeb.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Completion;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -61,7 +62,7 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Se debe ingresar toda la información necesaria";
                 return View(nuevoCurso);
             }
-            
+
             arProyectoBO.AddNewCourse(nuevoCurso);
 
             return RedirectToAction("Index");
@@ -106,7 +107,7 @@ namespace ARProyectoWeb.Controllers
             var userRole = HttpContext.Session.GetString("UserRole");
             if (userRole == "Estudiante")
             {
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
 
             var cursos = new List<Course>();
@@ -118,14 +119,14 @@ namespace ARProyectoWeb.Controllers
             {
                 var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
                 cursos = arProyectoBO.FindUsuarioCourses(userId);
-                
+
             }
 
             ViewBag.CourseId = new SelectList(cursos, "CourseId", "Nombre");
             List<Usuario> usuarios = new List<Usuario>();
 
             if (courseId != 0)
-            { 
+            {
                 usuarios = arProyectoBO.FindCourseUsuarios(courseId);
             }
             return View(usuarios);
@@ -151,6 +152,11 @@ namespace ARProyectoWeb.Controllers
 
             if (courseId != 0)
             {
+                if (userRole == "Estudiante")
+                {
+                    return RedirectToAction("TaskRateStudent", "TaskRate", new {courseId = courseId});
+                }
+
                 tasks = arProyectoBO.FindCourseTasks(courseId);
             }
             return View(tasks);

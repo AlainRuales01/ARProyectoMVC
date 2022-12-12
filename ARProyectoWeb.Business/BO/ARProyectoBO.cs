@@ -451,7 +451,7 @@ namespace ARProyectoWeb.Business.BO
             {
                 var taskCourse = _context.TaskCourse.Where(t => t.CourseId == model.CourseId && t.TaskId == model.TaskId).FirstOrDefault();
 
-                TaskRate taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId).FirstOrDefault();
+                TaskRate taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId && t.UsuarioId == model.UsuarioId).FirstOrDefault();
 
                 if (taskRate == null)
                 {
@@ -481,7 +481,7 @@ namespace ARProyectoWeb.Business.BO
             {
                 var taskCourse = _context.TaskCourse.Where(t => t.CourseId == model.CourseId && t.TaskId == model.TaskId).FirstOrDefault();
 
-                var taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId).FirstOrDefault();
+                TaskRate taskRate = _context.TaskRate.Where(t => t.TaskCourseId == taskCourse.TaskCourseId && t.UsuarioId == model.UsuarioId).FirstOrDefault();
 
                 if (taskRate == null)
                 {
@@ -555,13 +555,13 @@ namespace ARProyectoWeb.Business.BO
                         sumaCalificacionesEstudiante += calificacion;
                     }
 
-                    var calificacionpromedio = sumaCalificaciones / cantCalificaciones;
-                    var calificacionUsuariopromedio = sumaCalificacionesEstudiante / cantCalificacionesEstudiante;
+                    var calificacionpromedio = Math.Round(sumaCalificaciones / cantCalificaciones,2);
+                    var calificacionUsuariopromedio = Math.Round(sumaCalificacionesEstudiante / cantCalificacionesEstudiante ,2);
 
                     engagement.CalificacionProfesor = calificacionProfesor;
                     engagement.CalificacionPromedio = calificacionpromedio;
                     engagement.CalificacionUsuarioPromedio = calificacionUsuariopromedio;
-                    engagement.CalificacionEngagement = (calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio) /3;
+                    engagement.CalificacionEngagement = Math.Round((calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio)/3 , 2);
 
                     engagementInformation.Add(engagement);
                 }
@@ -622,13 +622,13 @@ namespace ARProyectoWeb.Business.BO
                         sumaCalificacionesEstudiante += calificacion;
                     }
 
-                    var calificacionpromedio = sumaCalificaciones / cantCalificaciones;
-                    var calificacionUsuariopromedio = sumaCalificacionesEstudiante / cantCalificacionesEstudiante;
+                    var calificacionpromedio = Math.Round(sumaCalificaciones / cantCalificaciones, 2);
+                    var calificacionUsuariopromedio = Math.Round(sumaCalificacionesEstudiante / cantCalificacionesEstudiante, 2);
 
                     engagement.CalificacionProfesor = calificacionProfesor;
                     engagement.CalificacionPromedio = calificacionpromedio;
                     engagement.CalificacionUsuarioPromedio = calificacionUsuariopromedio;
-                    engagement.CalificacionEngagement = (calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio) / 3;
+                    engagement.CalificacionEngagement = Math.Round((calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio) / 3, 2);
 
                     engagementInformation.Add(engagement);
                 }

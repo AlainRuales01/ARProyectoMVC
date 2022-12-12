@@ -38,10 +38,6 @@ namespace ARProyectoWeb.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var addTaskRate = new AddTaskRateViewModel();
-            addTaskRate.Estudiantes = arProyectoBO.FindUsuarioTaskRates(model.CourseId, model.TaskId);
-            addTaskRate.CourseId = model.CourseId;
-            addTaskRate.TaskId = model.TaskId;
 
             if (model.Calificacion > 0 && model.Calificacion <= 10)
             {
@@ -52,7 +48,12 @@ namespace ARProyectoWeb.Controllers
                 ViewBag.Error = "Ingrese un número entre 1 y 10";
             }
 
-            return View(addTaskRate);
+            var addTaskRate = new AddTaskRateViewModel();
+
+            addTaskRate.CourseId = model.CourseId;
+            addTaskRate.TaskId = model.TaskId;
+
+            return RedirectToAction("TaskRateTeacher", addTaskRate);
         }
 
         public IActionResult TaskRateStudent(int courseId)
@@ -82,11 +83,7 @@ namespace ARProyectoWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-            var addTaskRate = new AddTaskRateStudentViewModel();
-
-            addTaskRate.Tareas = arProyectoBO.FindCourseTaskRates(model.CourseId, userId);
-            addTaskRate.CourseId = model.CourseId;
-            addTaskRate.UsuarioId = userId;
+            
 
             if (model.Calificacion > 0 && model.Calificacion <= 10)
             {
@@ -96,8 +93,11 @@ namespace ARProyectoWeb.Controllers
             {
                 ViewBag.Error = "Ingrese un número entre 1 y 10";
             }
-            
-            return View(addTaskRate);
+
+            var addTaskRate = new AddTaskRateStudentViewModel();
+            addTaskRate.CourseId = model.CourseId;
+
+            return RedirectToAction("TaskRateStudent", addTaskRate);
         }
     }
 }
