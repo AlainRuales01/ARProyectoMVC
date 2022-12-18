@@ -17,6 +17,7 @@ namespace ARProyectoWeb.Data.Models
         public string Descripcion { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin{ get; set; }
+        public string Categoria { get; set; }
         public List<UsuarioCourse> Usuarios { get; set; }
         public List<TaskCourse> TareasCurso { get; set; }
     }

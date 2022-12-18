@@ -213,7 +213,7 @@ namespace ARProyectoWeb.Business.BO
             using (DataBaseContext _context = new DataBaseContext())
             {
                 var usuarioCourseExistente = _context.UsuarioCourse.Where(u => u.UsuarioId == usuarioCourse.UsuarioId && u.CourseId == usuarioCourse.CourseId).FirstOrDefault();
-                if(usuarioCourseExistente == null)
+                if (usuarioCourseExistente == null)
                 {
                     _context.UsuarioCourse.Add(usuarioCourse);
                     _context.SaveChanges();
@@ -525,7 +525,7 @@ namespace ARProyectoWeb.Business.BO
                                      CalificacionUsuario = tr.CalificacionUsuario
                                  }).ToList();
 
-                foreach(var item in tasks)
+                foreach (var item in tasks)
                 {
                     double sumaCalificaciones = 0;
 
@@ -555,13 +555,13 @@ namespace ARProyectoWeb.Business.BO
                         sumaCalificacionesEstudiante += calificacion;
                     }
 
-                    var calificacionpromedio = Math.Round(sumaCalificaciones / cantCalificaciones,2);
-                    var calificacionUsuariopromedio = Math.Round(sumaCalificacionesEstudiante / cantCalificacionesEstudiante ,2);
+                    var calificacionpromedio = Math.Round(sumaCalificaciones / cantCalificaciones, 2);
+                    var calificacionUsuariopromedio = Math.Round(sumaCalificacionesEstudiante / cantCalificacionesEstudiante, 2);
 
                     engagement.CalificacionProfesor = calificacionProfesor;
                     engagement.CalificacionPromedio = calificacionpromedio;
                     engagement.CalificacionUsuarioPromedio = calificacionUsuariopromedio;
-                    engagement.CalificacionEngagement = Math.Round((calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio)/3 , 2);
+                    engagement.CalificacionEngagement = Math.Round((calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio) / 3, 2);
 
                     engagementInformation.Add(engagement);
                 }
@@ -580,8 +580,8 @@ namespace ARProyectoWeb.Business.BO
                 var taskCourse = _context.TaskCourse.Where(c => c.TaskId == taskId).ToList();
 
                 var courses = (from tc in taskCourse
-                             join t in _context.Course on tc.CourseId equals t.CourseId
-                             select t).ToList();
+                               join t in _context.Course on tc.CourseId equals t.CourseId
+                               select t).ToList();
 
                 var taskRates = (from tc in taskCourse
                                  join tr in _context.TaskRate on tc.TaskCourseId equals tr.TaskCourseId
@@ -636,5 +636,91 @@ namespace ARProyectoWeb.Business.BO
 
             return engagementInformation;
         }
+
+        public List<EngagementInformationViewModel> GetCourseCategoryEngagement(string courseCategory)
+        {
+            List<EngagementInformationViewModel> engagementInformation = new List<EngagementInformationViewModel>();
+
+            using (DataBaseContext _context = new DataBaseContext())
+            {
+
+                var listCourses = (from c in _context.Course
+                                   where c.Categoria == courseCategory
+                                   select c).Distinct().ToList();
+
+                var listCoursesId = listCourses.Select(c => c.CourseId).ToList();
+
+                var taskCourse = _context.TaskCourse.Where(c => listCoursesId.Contains(c.CourseId)).ToList();
+
+                var tasks = (from tc in taskCourse
+                             join t in _context.Task on tc.TaskId equals t.TaskId
+                             select t).Distinct().ToList();
+
+                var taskRates = (from tc in taskCourse
+                                 join tr in _context.TaskRate on tc.TaskCourseId equals tr.TaskCourseId
+                                 select new
+                                 {
+                                     TaskId = tc.TaskId,
+                                     TaskCourseId = tc.TaskCourseId,
+                                     Calificacion = tr.Calificacion,
+                                     CalificacionUsuario = tr.CalificacionUsuario
+                                 }).ToList();
+
+                foreach (var item in tasks)
+                {
+                    var courses = taskCourse.Where(t => t.TaskId == item.TaskId).ToList();
+
+                    foreach (var itemCourse in courses)
+                    {
+                        var taskCourseInfo = taskCourse.Where(t => t.TaskId == item.TaskId && t.CourseId == itemCourse.CourseId).FirstOrDefault();
+
+                        double sumaCalificaciones = 0;
+
+                        var calificaciones = taskRates.Where(t => t.TaskId == item.TaskId && t.TaskCourseId ==  taskCourseInfo.TaskCourseId).Select(t => t.Calificacion).ToList();
+
+                        var cantCalificaciones = calificaciones.Count;
+
+                        double sumaCalificacionesEstudiante = 0;
+
+                        var calificacionesEstudiante = taskRates.Where(t => t.TaskId == item.TaskId && t.TaskCourseId == taskCourseInfo.TaskCourseId).Select(t => t.CalificacionUsuario).ToList();
+
+                        var cantCalificacionesEstudiante = calificacionesEstudiante.Count;
+
+                        var engagement = new EngagementInformationViewModel();
+
+
+                        var course = listCourses.Where(c => c.CourseId == taskCourseInfo.CourseId).FirstOrDefault();
+
+                        double calificacionProfesor = taskCourseInfo.CalificacionProfesor;
+
+                        engagement.NombreCourse = course.Nombre;
+                        engagement.Nombre = item.Titulo;
+
+                        foreach (var calificacion in calificaciones)
+                        {
+                            sumaCalificaciones += calificacion;
+                        }
+
+                        foreach (var calificacion in calificacionesEstudiante)
+                        {
+                            sumaCalificacionesEstudiante += calificacion;
+                        }
+
+                        var calificacionpromedio = Math.Round(sumaCalificaciones / cantCalificaciones, 2);
+                        var calificacionUsuariopromedio = Math.Round(sumaCalificacionesEstudiante / cantCalificacionesEstudiante, 2);
+
+                        engagement.CalificacionProfesor = calificacionProfesor;
+                        engagement.CalificacionPromedio = calificacionpromedio;
+                        engagement.CalificacionUsuarioPromedio = calificacionUsuariopromedio;
+                        engagement.CalificacionEngagement = Math.Round((calificacionProfesor + calificacionpromedio + calificacionUsuariopromedio) / 3, 2);
+
+                        engagementInformation.Add(engagement);
+                    }
+                }
+            }
+
+            return engagementInformation;
+        }
+
     }
 }

@@ -31,6 +31,7 @@
                     <th>Descripcion</th>
                     <th>Fecha de inicio</th>
                     <th>Fecha de fin</th>
+                    <th>Categoria</th>
                     <th></th>
                 </tr>
             </thead>
@@ -49,6 +50,9 @@
                         </td>
                         <td>
                             @item.FechaFin.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.Categoria
                         </td>
                         <td>
                             @if (Context.Session.GetString("UserRole") != "Estudiante")

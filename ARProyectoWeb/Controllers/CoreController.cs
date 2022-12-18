@@ -62,5 +62,16 @@ namespace ARProyectoWeb.Controllers
             return View(engagementInformation);
             
         }
+
+        public IActionResult CourseCategoryEngagement(string courseCategory)
+        {
+            List<EngagementInformationViewModel> engagementInformation = new List<EngagementInformationViewModel>();
+
+            if (!string.IsNullOrEmpty(courseCategory))
+            {
+                engagementInformation = arProyectoBO.GetCourseCategoryEngagement(courseCategory);
+            }
+            return View(engagementInformation);
+        }
     }
 }

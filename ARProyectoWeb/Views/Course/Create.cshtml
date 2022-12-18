@@ -30,6 +30,10 @@
             <p>Fecha de fin de curso</p>
             @Html.TextBoxFor(model=>model.FechaFin, new{@class = "form-control", Type = "date"})
         </div>
+        <div>
+            <p>Categoria de curso</p>
+            @Html.TextBoxFor(model=>model.Categoria, new{@class = "form-control"})
+        </div>
         <input values="Crear" type="submit" />
     }
 </div>

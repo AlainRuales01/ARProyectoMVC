@@ -2,6 +2,7 @@
 {
     public class EngagementInformationViewModel
     {
+        public string NombreCourse { get; set; }
         public string Nombre { get; set; }
         public double CalificacionProfesor{ get; set; }
         public double CalificacionPromedio{ get; set; }
